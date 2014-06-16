@@ -1,0 +1,12 @@
+{
+  "name": "mucca-design",
+  "private": true,
+  "dependencies": {
+    "modernizr": "~2.6.2",
+    "jquery": "~1.11.0",
+    "greensock": "~1.11.8",
+    "underscore": "~1.6.0",
+    "EventEmitter": "~1.1.0"
+  },
+  "devDependencies": {}
+}
