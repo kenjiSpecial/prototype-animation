@@ -24,4 +24,4 @@
 
     app.App = App;
 
-})(window.ma)
+})(window.ma);
