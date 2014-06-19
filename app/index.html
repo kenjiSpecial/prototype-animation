@@ -27,6 +27,13 @@
 
         <div class="container">
             <canvas id="c"></canvas>
+            <div id="steps">
+                <div id="step1" class="step">
+                    <div id="arrow-container">
+                        <svg id="arrow-svg"></svg>
+                    </div>
+                </div>
+            </div>
         </div>
 
 
@@ -36,15 +43,29 @@
         <script src="bower_components/greensock/src/uncompressed/TweenMax.js"></script>
         <script src="bower_components/underscore/underscore.js"></script>
         <script src="bower_components/EventEmitter/EventEmitter.js"></script>
+        <script src="bower_components/Snap.svg/dist/snap.svg-min.js"></script>
+        <script src="bower_components/velocity/jquery.velocity.js"></script>
+        <script src="scripts/vendor/lux.js"></script>
         <!-- endbower -->
         <!-- endbuild -->
 
         <!-- build:js scripts/main.js -->
         <script src="scripts/main.js"></script>
+
+        <!-- helpers  -->
+        <script src="scripts/helpers/events.js"></script>
+        <script src="scripts/helpers/windows.js"></script>
+        <!-- helpers  -->
+
         <script src="scripts/app.js"></script>
+
+        <!-- components  -->
         <script src="scripts/components/point.js"></script>
-        <script src="scripts/components/mucca-bg1.js"></script>
+        <script src="scripts/components/mucca-bg.js"></script>
         <script src="scripts/components/circle.js"></script>
+        <script src="scripts/components/step1/arrow.js"></script>
+        <!-- components  -->
+
         <!-- endbuild -->
 </body>
 </html>

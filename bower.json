@@ -6,7 +6,9 @@
     "jquery": "~1.11.0",
     "greensock": "~1.11.8",
     "underscore": "~1.6.0",
-    "EventEmitter": "~1.1.0"
+    "EventEmitter": "~1.1.0",
+    "Snap.svg": "~0.3.0",
+    "velocity": "~0.1.0"
   },
   "devDependencies": {}
 }

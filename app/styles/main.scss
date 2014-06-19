@@ -7,3 +7,27 @@ body {
     color: #333;
 }
 
+#steps{
+    // position: absolute;
+    // top : 0; left : 0;
+    
+    #step1{
+        opacity : 1;
+        cursor : pointer;
+        position : absolute;
+
+        top: 0;
+        //bottom : 60px;
+        left : calc(50% - 30px);
+        width : 60px;
+        height : 40px;
+        &:hover {
+            opacity: 1;
+        }
+
+        svg{
+          width: 60px;
+          height: 40px;
+        }
+    }
+}
