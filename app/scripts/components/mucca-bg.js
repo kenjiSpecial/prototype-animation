@@ -32,7 +32,7 @@
         },
 
         addAnimation : function(){
-            
+
             var yPos = parseInt(CONSTANTS.STAGE_HEIGHT * 3 / 5);
             TweenLite.to(this, .6, {height: yPos, ease : 'Power2.easeInOut', onComplete: this.onCompleteAnimation });
 
@@ -46,13 +46,13 @@
         addAnimation2 : function(){
 
         },
-        
+
         init   : function(){
 
         },
 
         levelUp : function(){
-            var yPos = parseInt(CONSTANTS.STAGE_HEIGHT * 4 / 5);
+            var yPos = CONSTANTS.STAGE_HEIGHT;
             TweenLite.to(this, .6, {height: yPos, ease : 'Power2.easeInOut', onComplete: this.onCompleteAnimation });
         },
 
@@ -64,20 +64,20 @@
             this.ctx.lineTo(CONSTANTS.STAGE_WIDTH, this.rightEdgeY);
             this.ctx.lineTo(CONSTANTS.STAGE_WIDTH, CONSTANTS.STAGE_HEIGHT);
             this.ctx.lineTo(0, CONSTANTS.STAGE_HEIGHT);
-            
+
             this.ctx.fill();
 
             this.ctx.closePath();
         },
-       
+
         onMouseMove : function( currentState ){
             var rotationTheta, duration;
-            
+
             duration = (CONSTANTS.INTERVAL_STEP1 )/ 1000;
             rotationTheta = this.rotationBase[currentState];
-            
+
             TweenLite.to(this, duration, {rate: rotationTheta, ease : 'Power2.easeInOut'});
-            
+
 
         },
 
@@ -88,7 +88,7 @@
     };
 
     // -------------
-    
+
     Object.defineProperty(MuccaBg1.prototype, 'height', {
         set : function(value){
             this.y       = (window.innerHeight - value);
@@ -109,15 +109,15 @@
 
         set : function(val){
            var yPos;
-           this._rate = val; 
+           this._rate = val;
            this.theta = Math.PI / 10 * val;
 
            // y - this.y = (x - window_half) * Math.tan(this.theta)
            this.leftEdgeY  = -CONSTANTS.HALF_STAGE_WIDTH * Math.tan(this.theta) + this.y;
            this.rightEdgeY =  CONSTANTS.HALF_STAGE_WIDTH * Math.tan(this.theta) + this.y;
-          
+
            //this.circlePos.y = Math.tan(this.theta) * (this.circlePos.x + this.y;
-           
+
         },
 
         get : function(){
@@ -128,6 +128,7 @@
 
     // -------------
 
-    app.components.MuccaBg1 = MuccaBg1; 
-    
+    app.components.MuccaBg1 = MuccaBg1;
+
+
 })(window.ma);

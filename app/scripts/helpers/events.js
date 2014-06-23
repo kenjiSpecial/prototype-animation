@@ -2,7 +2,13 @@
     var events = new EventEmitter();
 
    _.extend(events, {
+       UPDATE_GLOBE      : 'update-globe',
+       COMPLETE_SWIPE_BG : 'complete-swipe-bg',
 
+        // click
+        CLICK : 'click',
+
+        // mouse event
         MOUSE_ENTER : 'mouseenter',
         MOUSE_LEAVE : 'mouseleave',
         MOUSE_MOVE  : 'mousemove',

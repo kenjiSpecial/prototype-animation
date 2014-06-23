@@ -1,11 +1,12 @@
 (function (app) {
     var CONSTANTS = app.CONSTANTS;
     var color = '#fff';
+    var orangeColor = '#F36D3F';
 
     var Arrow = function () {
         _.bindAll(this, 'fallDown');
 
-        this.$container = $('#step1');
+        this.$container = $('#arrow-container');
         var top = parseInt(CONSTANTS.STAGE_HEIGHT * 2 / 5) + 'px';
         this.$container.css({
             top: top
@@ -25,9 +26,22 @@
     };
 
     Arrow.prototype = {
-        show: function () {
+        start: function () {
             _.delay(this.fallDown, 700);
         },
+
+        show : function(){
+            this.$container.css({ display : 'block' });
+
+            this.line.attr({
+              stroke : orangeColor
+            });
+
+            this.line.animate({
+                points: [0, 0, 30, 20, 60, 0]
+            }, 400, mina.easeinout);
+        },
+
 
         hide: function () {
             this.line.animate({

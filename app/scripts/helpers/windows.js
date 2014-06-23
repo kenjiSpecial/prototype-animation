@@ -21,6 +21,10 @@
 
     });
 
+    window.addEventListener(myEvents.CLICK, function(event){
+        myEvents.emit(myEvents.CLICK);
+    });
+
     function onMouseWheel(event) {
         var dTime;
         var delta;

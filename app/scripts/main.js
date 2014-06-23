@@ -99,6 +99,10 @@ window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequest
             // =============
             step1 : {
                 Arrow : null,
+            },
+
+            texts : {
+
             }
         },
 
@@ -112,7 +116,7 @@ window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequest
         // loop
         loop();
     };
-    
+
 
     function init(){
         width = window.innerWidth;
@@ -122,16 +126,16 @@ window.requestAnimationFrame = window.requestAnimationFrame || window.mozRequest
         ctx    = canvas.getContext('2d');
 
         canvas.width  = width;
-        canvas.height = height; 
+        canvas.height = height;
 
         app = new ma.App(ctx);
         app.start();
     }
 
     function loop(){
-       ctx.fillStyle = bgCol; 
+       ctx.fillStyle = bgCol;
        ctx.fillRect(0, 0, width, height);
-        
+
        app.update();
 
        requestAnimationFrame(loop);

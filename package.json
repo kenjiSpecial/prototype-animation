@@ -10,6 +10,7 @@
     "gulp-bower-files": "^0.2.1",
     "gulp-cache": "^0.1.1",
     "gulp-clean": "^0.2.4",
+    "gulp-compass": "^1.1.9",
     "gulp-csso": "^0.2.6",
     "gulp-filter": "^0.4.1",
     "gulp-flatten": "^0.0.2",

@@ -1,33 +1,100 @@
 @import "normalize";
+@import "util";
+
 body {
-    width: 100%;
-    height: 100%;
-    overflow : hidden;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    color: #333;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  //font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-family: Georgia, 'Times New Roman', Times, serif;
+  //font-weight: bold;
+  letter-spacing: 1px;
+  font-size: 24px;
+  //line-height: 1.5em;
+  color : #fff;
 }
 
-#steps{
-    // position: absolute;
-    // top : 0; left : 0;
-    
-    #step1{
-        opacity : 1;
-        cursor : pointer;
-        position : absolute;
+#steps {
+  // position: absolute;
+  // top : 0; left : 0;
+  .step {
+    display: none;
 
-        top: 0;
-        //bottom : 60px;
-        left : calc(50% - 30px);
-        width : 60px;
-        height : 40px;
-        &:hover {
-            opacity: 1;
-        }
-
-        svg{
-          width: 60px;
-          height: 40px;
-        }
+    &.show {
+      display: block;
     }
+  }
+
+  #step1 {
+
+    .content {
+      position: absolute;
+      top: calc(40% + 30px);
+    }
+
+    .main {
+      left: calc(50% - 167px);
+    }
+
+    .sub-1 {
+      left: 30px;
+      font-style: italic;
+    }
+
+    .sub-2 {
+      right: 30px;
+      font-style: italic;
+    }
+
+  }
+
+  #step2 {
+    .content{
+      text-align: center;
+      position: absolute;
+      top: 50%; left: 50%;
+      color: rgb(213, 213, 213);
+      width: 280px;
+
+      @include translate(-50%, -50%);
+    }
+  }
+
+  #step4 {
+    .content{
+      text-align: center;
+      position: absolute;
+      top: 50%; left: 50%;
+      color: rgb(213, 213, 213);
+      width: 280px;
+
+      @include translate(-50%, -50%);
+    }
+  }
+
+  #step6 {
+    .content{
+      text-align: center;
+      position: absolute;
+      top: 50%; left: 50%;
+      color: rgb(114, 114, 114);
+      width: 280px;
+
+      @include translate(-50%, -50%);
+    }
+  }
+}
+
+#arrow-container {
+  position: absolute;
+  width: 60px;
+  height: 40px;
+
+  left: calc(50% - 30px);
+  top: 0;
+
+  svg {
+    width: 60px;
+    height: 40px;
+  }
 }

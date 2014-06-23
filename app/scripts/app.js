@@ -6,6 +6,8 @@
         _.bindAll(this,
             'onMouseMove', 'onMouseEnterStep1', 'onMouseLeaveStep1',
             'delayShowStep1',
+            'onClick',
+            'onCompleteSwipeBackground', 'onCompleteUpdateGlobe',
             'onScrollUp', 'onScrollDown'
         );
 
@@ -21,83 +23,233 @@
         this.isMouseEnter = false;
 
 
-        this.$step1 = $('#step1');
+        this.$step1 = this.$steps[0];
         this.$step1.on(events.MOUSE_ENTER, this.onMouseEnterStep1);
         this.$step1.on(events.MOUSE_LEAVE, this.onMouseLeaveStep1);
-        //this.$step1.velocity({ top: 500 }, 1000, "swing");
+
+        this.$arrowContainer = $('#arrow-container');
+        this.$arrowContainer.on(events.MOUSE_ENTER, this.onMouseEnterStep1);
+        this.$arrowContainer.on(events.MOUSE_LEAVE, this.onMouseLeaveStep1);
 
 
-        events.addListener(events.SCROLL_UP, this.onScrollUp);
-        events.addListener(events.SCROLL_DOWN, this.onScrollDown);
+        events.addListener(events.COMPLETE_SWIPE_BG, this.onCompleteSwipeBackground);
+        events.addListener(events.UPDATE_GLOBE, this.onCompleteUpdateGlobe);
+
+        this.$stepCenter = this.$steps[0].find('.main');
+        this.$step1Left  = this.$steps[0].find('.sub-1');
+        this.$step1Right = this.$steps[0].find('.sub-2');
     };
 
 
     App.prototype = {
+        $steps : [
+            $('#step1'),
+            $('#step2'),
+            $('#step3'),
+            $('#step4'),
+            $('#step5'),
+            $('#step6')
+        ],
+
         start: function () {
             //this.mouseMoves[this.currentState].call(this, position);
             this.show[this.currentState].call(this);
+
+            events.addListener(events.SCROLL_UP, this.onScrollUp);
+            events.addListener(events.SCROLL_DOWN, this.onScrollDown);
         },
 
         update: function () {
-            this.states[this.currentState].call(this);
+            this.updates[this.currentState].call(this);
         },
 
-        hide : {
-            state1 : function(){
+        hide: {
+            state1: function () {
+
+                var self = this;
+                this.$steps[0].velocity({
+                    opacity: 0
+                }, {
+                    complete : function(){
+                        self.$steps[0].removeClass('show');
+                }});
+
+
                 events.removeListener(events.MOUSE_MOVE, this.onMouseMove);
-                if( this.currentMouseState ) {
+                events.removeListener(events.SCROLL_UP, this.onScrollUp);
+                events.removeListener(events.SCROLL_DOWN, this.onScrollDown);
+
+                if (this.currentMouseState) {
                     this.circle.onMouseEnterStep1();
                     this.bg1.onMouseEnterStep1();
 
                     this.waitStep1 = 1200;
-                }else{
+                } else {
                     this.waitStep1 = 0
                 }
 
                 this.step1Arrow.hide();
             },
 
-            state2 : function(){
+            state2: function () {
 
+            },
+
+            state3 : function(){
+                this.step1Arrow.hide();
+
+                var self = this;
+                this.$steps[1].velocity({
+                    opacity: 0
+                }, {
+                    complete : function(){
+                        self.$steps[1].removeClass('show');
+                }});
+
+                events.removeListener(events.SCROLL_UP, this.onScrollUp);
+                events.removeListener(events.SCROLL_DOWN, this.onScrollDown);
+            },
+
+            state4 : function(){
+
+            },
+
+            state5 : function(){
+                // this.step1Arrow.hide();
+                var self = this;
+                this.$steps[3].velocity({
+                    opacity: 0
+                }, {
+                    complete : function(){
+                        self.$steps[3].removeClass('show');
+                }});
+
+                events.removeListener(events.MOUSE_MOVE, this.onMouseMove);
+                events.removeListener(events.CLICK, this.onClick);
+
+                events.removeListener(events.SCROLL_UP, this.onScrollUp);
+                events.removeListener(events.SCROLL_DOWN, this.onScrollDown);
             }
         },
 
         show: {
             state1: function () {
+                this.$steps[0].addClass('show');
+
+                this.$step1Left.css({opacity: 0});
+                this.$step1Right.css({opacity: 0});
+
+
                 this.bg1.show();
                 this.circle.show();
-                this.step1Arrow.show();
+                this.step1Arrow.start();
 
                 events.addListener(events.MOUSE_MOVE, this.onMouseMove);
             },
 
-            state2 : function(){
-               console.log(this.waitStep1)
-               if(this.waitStep1 !== 0){
-                  // this.delayShowStep1();
-                   _.delay(this.delayShowStep1, this.waitStep1);
-               }else{
-                  this.delayShowStep1();
-               }
+            state2: function () {
+                console.log(this.waitStep1)
+                if (this.waitStep1 !== 0) {
+                    _.delay(this.delayShowStep1, this.waitStep1);
+                } else {
+                    this.delayShowStep1();
+                }
 
+                // showing text
+                this.$steps[1].css({opacity: 0});
+                this.$steps[1].addClass('show');
+                this.$steps[1].velocity({ opacity: 1 }, {delay: (400 + this.waitStep1), duration: 400});
+
+            },
+
+            state3: function () {
+                this.globalCollection = new app.components.GlobeCollection(this.ctx);
+                this.globalCollection.show();
+
+                (function(self){
+                  setTimeout(function(){
+                    self.step1Arrow.show();
+
+                    events.addListener(events.SCROLL_UP, self.onScrollUp);
+                    events.addListener(events.SCROLL_DOWN, self.onScrollDown);
+
+                  }, 1600);
+                })(this);
+
+
+            },
+
+            state4 : function(){
+               this.$steps[3].css({opacity: 0});
+               this.$steps[3].addClass('show');
+               this.$steps[3].velocity({ opacity: 1 }, {delay: 400, duration: 600});
+
+               this.globalCollection.upgrade();
+            },
+
+            state5 : function(){
+                console.log('state5');
+
+                this.step1Arrow.show();
+
+                // =======================
+
+                events.addListener(events.MOUSE_MOVE, this.onMouseMove);
+                events.addListener(events.CLICK, this.onClick);
+
+                events.addListener(events.SCROLL_UP, this.onScrollUp);
+                events.addListener(events.SCROLL_DOWN, this.onScrollDown);
+
+                this.enableMicrophone();
+            },
+
+            state6 : function(){
+              this.$steps[5].css({opacity: 0});
+              this.$steps[5].addClass('show');
+              this.$steps[5].velocity({ opacity: 1 }, {delay: 200, duration: 600});
+
+              this.globalCollection.showInState6();
             }
         },
 
-        delayShowStep1 : function(){
-            console.log('delay')
+        delayShowStep1: function () {
             this.circle.fallDown();
             this.bg1.levelUp();
         },
 
-        states: {
-            state1: function () {
+        updates: {
+            state1 : function () {
                 this.bg1.update();
                 this.circle.update();
             },
 
-            state2 : function(){
+            state2 : function () {
                 this.bg1.update();
                 this.circle.update();
+            },
+
+            state3 : function () {
+
+                this.globalCollection.update();
+
+            },
+
+            state4 : function () {
+
+                this.globalCollection.update();
+
+            },
+
+            state5 : function(){
+
+                this.globalCollection.update2();
+
+            },
+
+            state6 : function(){
+
+                this.globalCollection.updateInState6();
+
             }
         },
 
@@ -110,6 +262,10 @@
 
                 if (this.circle.isFall) return;
 
+                if(this.currentMouseState == null){
+                    this.$stepCenter.velocity({opacity: 0});
+                }
+
                 if (mouseX < CONSTANTS.HALF_STAGE_WIDTH) {
                     this.prevMouseState = this.currentMouseState;
                     this.currentMouseState = 'left';
@@ -120,9 +276,21 @@
 
                 if (this.currentMouseState === this.prevMouseState) return;
 
+                if(this.currentMouseState == 'left'){
+                    this.$step1Left.velocity({opacity: 0});
+                    this.$step1Right.velocity({opacity: 1});
+                }else{
+                    this.$step1Left.velocity({opacity: 1});
+                    this.$step1Right.velocity({opacity: 0});
+                }
+
                 this.bg1.onMouseMove(this.currentMouseState);
                 this.circle.onMouseMove(this.currentMouseState, this.bg1);
 
+            },
+
+            state5 : function(mouse){
+                this.globalCollection.onMousemove(mouse);
             }
 
         },
@@ -131,11 +299,26 @@
             this.mouseMoves[this.currentState].call(this, position);
         },
 
+        clicks : {
+            state5 : function(){
+                this.globalCollection.onClick();
+
+            }
+        },
+
+        onClick : function(){
+            this.clicks[this.currentState].call(this);
+        },
+
         // ===============
         //   mouse event
         // ===============
 
         onMouseEnterStep1: function (event) {
+            this.$stepCenter.velocity({opacity: 1});
+            this.$step1Left.velocity({opacity: 0});
+            this.$step1Right.velocity({opacity: 0});
+
             this.prevMouseState = null;
             this.currentMouseState = null;
             this.isMouseEnterStep1 = true;
@@ -157,13 +340,31 @@
         },
 
         onScrollDown: function (event) {
-            if(this.count >= 2) return;
             this.hide[this.currentState].call(this);
 
             this.count++;
             this.currentState = 'state' + this.count;
 
             this.show[this.currentState].call(this);
+        },
+
+        // ======================
+        //   on complete event
+        // ======================
+
+        onCompleteSwipeBackground: function () {
+            this.onScrollDown();
+        },
+
+        onCompleteUpdateGlobe : function(){
+           this.onScrollDown();
+        },
+
+        // ======================
+        //
+
+        enableMicrophone : function(){
+            console.log('enable microphone');
         }
     };
 

@@ -1,8 +1,9 @@
 (function(app){
+    var events = app.helpers.events;
     var CONSTANTS = app.CONSTANTS;
-    
+
     var Circle = function(ctx, bg){
-        _.bindAll(this, 'addAnimation', 'onCompleteAnimation', 'swipeBackground');
+        _.bindAll(this, 'addAnimation', 'onCompleteAnimation', 'swipeBackground', 'onCompleteSwipeBackground');
 
        this.ctx = ctx;
        this.isActive = false;
@@ -26,14 +27,14 @@
         },
 
         moveBase : {
-            'left'  : CONSTANTS.STAGE_WIDTH * 1/6,
+            'left'  : CONSTANTS.STAGE_WIDTH    /6,
             'right' : CONSTANTS.STAGE_WIDTH * 5/6
         },
 
         addAnimation : function(){
             console.log('addAnimation');
             var yPos = parseInt(app.CONSTANTS.STAGE_HEIGHT * 2/5 );
-            this.x = app.CONSTANTS.HALF_STAGE_WIDTH; 
+            this.x = app.CONSTANTS.HALF_STAGE_WIDTH;
             this.y = - this.rad;
             this.isActive = true;
 
@@ -56,12 +57,17 @@
             var rad  = Math.sqrt(CONSTANTS.HALF_STAGE_WIDTH * CONSTANTS.HALF_STAGE_WIDTH + CONSTANTS.HALF_STAGE_HEIGHT * CONSTANTS.HALF_STAGE_HEIGHT);
             var yPos = this.y + rad;
 
-            TweenLite.to(this, .6, { rad: rad, y: yPos })},
+            TweenLite.to(this, 1, { rad: rad, y: yPos, onComplete: this.onCompleteSwipeBackground })
+        },
+
+        onCompleteSwipeBackground : function() {
+            events.emit(events.COMPLETE_SWIPE_BG);
+        },
 
         update : function(){
             var posY, rad;
             if(!this.isActive) return;
-            
+
 
             this.ctx.beginPath();
             this.ctx.fillStyle = this.col;
@@ -84,16 +90,16 @@
             this.ctx.fill();
             this.ctx.closePath();
         },
-        
+
         onMouseMove : function( currentMouseState, bg ){
             var rotationTheta, duration, delay;
-           
+
             delay    = (CONSTANTS.INTERVAL_STEP1 /  2000);
 
             if(this.rad == this.MAX_RAD){
-                TweenLite.to(this, this.duration, {x: this.moveBase[currentMouseState], ease : 'Linear', delay: delay}); 
+                TweenLite.to(this, this.duration, {x: this.moveBase[currentMouseState], ease : 'Linear', delay: delay});
             }else{
-                TweenLite.to(this, this.duration, {x: this.moveBase[currentMouseState], rad : this.MAX_RAD, ease : 'Linear', delay: delay}); 
+                TweenLite.to(this, this.duration, {x: this.moveBase[currentMouseState], rad : this.MAX_RAD, ease : 'Linear', delay: delay});
             }
 
         },
