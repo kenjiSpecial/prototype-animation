@@ -1,4 +1,7 @@
 (function (app) {
+    window.AudioContext = window.AudioContext || window.webkitAudioContext
+    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+
     var events = app.helpers.events;
     var CONSTANTS = app.CONSTANTS;
 
@@ -6,6 +9,7 @@
         _.bindAll(this,
             'onMouseMove', 'onMouseEnterStep1', 'onMouseLeaveStep1',
             'delayShowStep1',
+            'gotStream', 'streamError', 'onAudioProcess',
             'onClick',
             'onCompleteSwipeBackground', 'onCompleteUpdateGlobe',
             'onScrollUp', 'onScrollDown'
@@ -38,10 +42,18 @@
         this.$stepCenter = this.$steps[0].find('.main');
         this.$step1Left  = this.$steps[0].find('.sub-1');
         this.$step1Right = this.$steps[0].find('.sub-2');
+
+        // relating to microphone
+        this.audioContext = new AudioContext();
+        this.buflen = 2048;
+        this.buf = new Uint8Array( this.buflen );
+
     };
 
 
     App.prototype = {
+        isMicrophoneActive : false,
+
         $steps : [
             $('#step1'),
             $('#step2'),
@@ -115,7 +127,8 @@
             },
 
             state5 : function(){
-                // this.step1Arrow.hide();
+                if(this.stream && typeof this.stream.stop === 'function') this.stream.stop();
+
                 var self = this;
                 this.$steps[3].velocity({
                     opacity: 0
@@ -244,6 +257,7 @@
 
                 this.globalCollection.update2();
 
+                if(this.isMicrophoneActive) this.updatePitch();
             },
 
             state6 : function(){
@@ -364,7 +378,90 @@
         //
 
         enableMicrophone : function(){
-            console.log('enable microphone');
+            //console.log('enable microphone');
+            //this.getUserMedia({audio : true}, this.gotStream);
+            try {
+
+                navigator.getUserMedia({audio : true}, this.gotStream, this.streamError);
+            } catch (e) {
+                alert('getUserMedia threw exception :' + e);
+            }
+
+
+        },
+
+        gotStream : function(stream){
+            var self = this;
+
+            this.stream = stream;
+
+            var mediaStreamSource = this.audioContext.createMediaStreamSource(stream);
+            this.analyser = this.audioContext.createAnalyser();
+            this.analyser.smoothingTimeConstant = 0.2;
+            this.analyser.fftSize = 1024;
+            mediaStreamSource.connect(this.analyser);
+
+            var node = this.audioContext.createJavaScriptNode(2048, 1, 1);
+            var values = 0;
+            var average;
+
+            node.onaudioprocess = this.onAudioProcess;
+                /**
+                function () {
+                // bitcount is fftsize / 2
+                var array = new Uint8Array(this.analyser.frequencyBinCount);
+                this.analyser.getByteFrequencyData(array);
+
+                var length = array.length;
+                for (var i = 0; i < length; i++) {
+                    values += array[i];
+                }
+
+                average = values / length;
+//                console.log('average' + average);
+                //oppdaterGui(average);
+                average = values = 0;
+            }; **/
+
+            mediaStreamSource.connect(this.analyser);
+            this.analyser.connect(node);
+            node.connect(this.audioContext.destination);
+
+        },
+
+        onAudioProcess : function(){
+            var average = 0;
+            var values  = 0;
+
+            var array = new Uint8Array(this.analyser.frequencyBinCount);
+            this.analyser.getByteFrequencyData(array);
+
+            var length = array.length;
+            for (var i = 0; i < length; i++) {
+                values += array[i];
+            }
+
+            average = values / length;
+
+            this.globalCollection.onProcessAudio(average);
+        },
+
+
+        streamError : function(){
+            alert('Stream generation failed.')
+        },
+
+        updatePitch : function(){
+            //console.log('updatePitch');
+            //this.analyser.getByteTimeDomainData(this.buf);
+            //console.log(this.analyser.createGain());
+            //console.log(this.audioContext.createGain())
+
+            //this.gain = this.audioContext.createGain();
+
+            //window.buf = this.buf;
+            //window.analyser = this.analyser;
+
         }
     };
 

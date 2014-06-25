@@ -87,9 +87,20 @@
         },
 
         onClick : function(){
+            var clickVal = 20;
+
             // click
             for(var i = 0; i < this.globes.length; i++){
-                this.globes[i].onClick();
+                this.globes[i].onClick(clickVal);
+            }
+        },
+
+        onProcessAudio : function(audio){
+            var audioVal = audio/10;
+
+            // click
+            for(var i = 0; i < this.globes.length; i++){
+                this.globes[i].onClick(audioVal);
             }
         }
 

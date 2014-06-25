@@ -136,7 +136,7 @@
                 this.rads[i].rad += this.rads[i].velRad;
 
                 this.rads[i].velRad += (this.origRad - this.rads[i].rad) * .03;
-                this.rads[i].velRad *= 0.95;
+                this.rads[i].velRad *= 0.9;
 
                 if( velocity.x !== 0 || velocity.y !== 0 ){
                     var theta = i / this.rads.length * 2 * Math.PI;
@@ -304,10 +304,13 @@
             this.ctx.restore();
         },
 
-        onClick : function(){
+        onClick : function(val){
+            var audioValue = val;
+            console.log(audioValue)
+
             //this.rads[i].velRad += 200 * (2 - Math.random());
             this.rads.forEach(function(element, index, array){
-                element.velRad += 20 * (2 * Math.random() - 1);
+                element.velRad +=  audioValue * ( Math.random() -.5);
             });
         }
 
